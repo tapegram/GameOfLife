@@ -1,7 +1,16 @@
 package version1
 
 import kotlin.random.Random
-
+/*
+Things that could be improved:
+1) Relationship between cell position and its alive or dead status.
+    Maybe cells should know there position?
+    Maybe a board should have spaces which hold cells, and those spaces know their position?
+2) Should make illegal coords unrepresentable (impossible to make coords off the board)
+3) The `value` method is sloppy, should that even live on the cell?
+4) Coord's xy orientation is confusing.
+5) Could be much more configurable
+ */
 
 sealed class Cell {
     abstract fun next(neighborsAlive: Int): Cell
@@ -28,7 +37,7 @@ sealed class Cell {
 }
 
 data class Coord(val x: Int, val y: Int) {
-    fun getBoarderingCoords(): List<Coord> {
+    fun getBorderingCoords(): List<Coord> {
         return listOf(
             Coord(x - 1, y),
             Coord(x + 1, y),
@@ -58,7 +67,7 @@ data class Board(
         grid = grid.mapIndexed { x, row ->
             row.mapIndexed { y, cell ->
                 cell.next(
-                    this.countBoarderingLivingCells(
+                    this.countBorderingLivingCells(
                         Coord(x, y)
                     )
                 )
@@ -74,7 +83,7 @@ data class Board(
             .also {
                 grid.mapIndexed { x, row ->
                     row.mapIndexed { y, cell ->
-                        this.countBoarderingLivingCells(Coord(x, y))
+                        this.countBorderingLivingCells(Coord(x, y))
                     }
                 }
             }
@@ -82,9 +91,9 @@ data class Board(
     private fun get(coord: Coord): Cell = grid[coord.x][coord.y]
 
     // TODO: Should try to make illegal coords unrepresentable
-    private fun countBoarderingLivingCells(coord: Coord): Int =
+    private fun countBorderingLivingCells(coord: Coord): Int =
         coord
-            .getBoarderingCoords()
+            .getBorderingCoords()
             .filter { it.x >= 0 }
             .filter { it.x < grid.count() }
             .filter { it.y >= 0 }
@@ -94,9 +103,10 @@ data class Board(
 
 fun main() {
     var board = Board
-        .createRandom(15)
+        .createRandom(20)
 
     while (board.iteration < 50) {
+        // Fake clear the output so it looks animated
         print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
         board = board
             .printState()
