@@ -1,6 +1,7 @@
-package version1
+package com.gameoflife.version1
 
 import kotlin.random.Random
+
 /*
 Things that could be improved:
 1) Relationship between cell position and its alive or dead status.
@@ -23,7 +24,7 @@ sealed class Cell {
             else -> Dead
         }
         override fun value(): Int = 1
-        override fun toString() = "A"
+        override fun toString() = "O"
     }
 
     object Dead: Cell() {
@@ -32,7 +33,7 @@ sealed class Cell {
             else -> Dead
         }
         override fun value(): Int = 0
-        override fun toString() = "_"
+        override fun toString() = " "
     }
 }
 
@@ -99,18 +100,4 @@ data class Board(
             .filter { it.y >= 0 }
             .filter { it.y < grid[it.x].count() }
             .sumBy { get(it).value() }
-}
-
-fun main() {
-    var board = Board
-        .createRandom(20)
-
-    while (board.iteration < 50) {
-        // Fake clear the output so it looks animated
-        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-        board = board
-            .printState()
-            .next()
-        Thread.sleep(300)
-    }
 }
